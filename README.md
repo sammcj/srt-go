@@ -127,6 +127,12 @@ Configuration is stored in `~/.srt-settings.json` and created automatically on f
     "allowWrite": ["."],
     "denyWrite": []
   },
+  "process": {
+    "allowFork": true,
+    "allowSysctlRead": true,
+    "allowMachLookup": true,
+    "allowPosixShm": true
+  },
   "dangerousFilePatterns": [
     ".env",
     ".git-credentials",
@@ -248,6 +254,28 @@ These patterns are automatically protected in allowed write directories:
 ```
 
 Even if you allow write to current directory, these files/directories are automatically scanned and blocked using ripgrep.
+
+### Process Configuration
+
+Control which low-level process operations are permitted:
+
+```json
+{
+  "process": {
+    "allowFork": true,
+    "allowSysctlRead": true,
+    "allowMachLookup": true,
+    "allowPosixShm": true
+  }
+}
+```
+
+- **allowFork**: Allow processes to fork (create child processes). Required for most scripting languages and package managers.
+- **allowSysctlRead**: Allow reading system information via sysctl. Needed for system information queries.
+- **allowMachLookup**: Allow Mach IPC service lookups. Required for inter-process communication on macOS.
+- **allowPosixShm**: Allow POSIX shared memory operations. Required for memory allocation in many programs.
+
+**Default**: All are `true` by default as they're required for basic operations of most development tools (npm, pip, etc.). Set to `false` for maximum restriction when running untrusted code that doesn't need these capabilities.
 
 ### Pattern Matching
 

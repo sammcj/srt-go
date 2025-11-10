@@ -12,6 +12,7 @@ var defaultConfigJSON []byte
 type Config struct {
 	Network               NetworkConfig       `json:"network"`
 	Filesystem            FilesystemConfig    `json:"filesystem"`
+	Process               ProcessConfig       `json:"process"`
 	DangerousFilePatterns []string            `json:"dangerousFilePatterns"`
 	DangerousDirPatterns  []string            `json:"dangerousDirPatterns"`
 	Violations            map[string][]string `json:"ignoreViolations"`
@@ -35,6 +36,14 @@ type FilesystemConfig struct {
 	DenyRead   []string `json:"denyRead"`
 	AllowWrite []string `json:"allowWrite"`
 	DenyWrite  []string `json:"denyWrite"`
+}
+
+// ProcessConfig contains process-related sandbox permissions
+type ProcessConfig struct {
+	AllowFork        bool `json:"allowFork"`        // Allow process forking
+	AllowSysctlRead  bool `json:"allowSysctlRead"`  // Allow reading system information
+	AllowMachLookup  bool `json:"allowMachLookup"`  // Allow Mach IPC lookups
+	AllowPosixShm    bool `json:"allowPosixShm"`    // Allow POSIX shared memory
 }
 
 // RipgrepConfig contains ripgrep-specific settings
@@ -95,5 +104,13 @@ func (c *Config) Merge(other *Config) {
 	}
 	if len(other.Ripgrep.Args) > 0 {
 		c.Ripgrep.Args = other.Ripgrep.Args
+	}
+	// Process permissions - only merge if at least one is true (indicates explicit configuration)
+	// This prevents false defaults from overwriting true defaults when process section is missing
+	if other.Process.AllowFork || other.Process.AllowSysctlRead || other.Process.AllowMachLookup || other.Process.AllowPosixShm {
+		c.Process.AllowFork = other.Process.AllowFork
+		c.Process.AllowSysctlRead = other.Process.AllowSysctlRead
+		c.Process.AllowMachLookup = other.Process.AllowMachLookup
+		c.Process.AllowPosixShm = other.Process.AllowPosixShm
 	}
 }

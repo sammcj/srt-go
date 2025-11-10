@@ -7,19 +7,33 @@ import (
 	"github.com/sammcj/srt-go/internal/filesystem"
 )
 
-// GenerateSeatbeltProfile generates a Seatbelt profile from paths
+// GenerateSeatbeltProfile generates a Seatbelt profile from paths and process permissions
 func GenerateSeatbeltProfile(
 	httpProxyPort, socksProxyPort int,
 	denyReadPaths, allowWritePaths, denyWritePaths []string,
+	allowFork, allowSysctlRead, allowMachLookup, allowPosixShm bool,
 ) (string, error) {
 	var sb strings.Builder
 
 	// Version declaration
 	sb.WriteString("(version 1)\n\n")
 
-	// Process execution - allow all
-	sb.WriteString("; Process execution - allow all\n")
-	sb.WriteString("(allow process-exec*)\n\n")
+	// Process operations - configurable permissions
+	sb.WriteString("; Process operations\n")
+	sb.WriteString("(allow process-exec*)\n")
+	if allowFork {
+		sb.WriteString("(allow process-fork)\n")
+	}
+	if allowSysctlRead {
+		sb.WriteString("(allow sysctl-read)\n")
+	}
+	if allowMachLookup {
+		sb.WriteString("(allow mach-lookup)\n")
+	}
+	if allowPosixShm {
+		sb.WriteString("(allow ipc-posix-shm*)\n")
+	}
+	sb.WriteString("\n")
 
 	// Network restrictions - deny all except proxies
 	sb.WriteString("; Network - deny all except proxies\n")

@@ -27,6 +27,12 @@
     ],
     "denyWrite": []
   },
+  "process": {
+    "allowFork": true,
+    "allowSysctlRead": true,
+    "allowMachLookup": true,
+    "allowPosixShm": true
+  },
   "dangerousFilePatterns": [
     ".env",
     ".git-credentials",

@@ -132,6 +132,10 @@ func (m *Manager) Execute(command []string) error {
 		denyReadPaths,
 		allowWritePaths,
 		denyWritePaths,
+		m.config.Process.AllowFork,
+		m.config.Process.AllowSysctlRead,
+		m.config.Process.AllowMachLookup,
+		m.config.Process.AllowPosixShm,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to generate Seatbelt profile: %w", err)
