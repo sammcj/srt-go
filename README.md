@@ -4,7 +4,7 @@ A lightweight, high-performance sandboxing tool for macOS 26+ (Tahoe) that enfor
 
 ## Overview
 
-`srt` wraps commands in a security sandbox that controls what files they can access and which network domains they can connect to. It's designed for safely running untrusted code, package managers, build tools, and AI agents with granular security policies.
+`srt` wraps commands in a security sandbox that controls what files they can access and which network domains they can connect to. It's designed for adding a line of defence when running untrusted code, tools, and other commands that AI agents may run with granular security policies.
 
 ### Why sandbox?
 
@@ -12,7 +12,7 @@ A lightweight, high-performance sandboxing tool for macOS 26+ (Tahoe) that enfor
 - **Control network access**: Allow/deny specific domains, default allow or deny all
 - **Sandbox package managers**: Run `npx`, `uvx` with limited access to prevent data leaks
 - **Audit access**: See what files and networks commands try to access
-- **Zero trust for AI agents**: Let AI coding assistants run commands without compromising security
+- **Zero trust for AI agents**: Let AI coding assistants run commands with file and network access controls
 
 ### Key Features
 
@@ -322,38 +322,13 @@ Maximum restrictions for untrusted code:
 srt --settings ci-config.json "npm run build"
 ```
 
-### AI Agent Integration
-
-Protect credentials from AI coding assistants:
-
-```json
-{
-  "network": {
-    "defaultPolicy": "allow",
-    "deniedDomains": []
-  },
-  "filesystem": {
-    "denyRead": [
-      "~/.ssh/**",
-      "~/.aws/**",
-      "**/.env*",
-      "**/*credentials*"
-    ],
-    "allowWrite": ["."],
-    "denyWrite": ["**/.env*", "**/*.key"]
-  }
-}
-```
-
-Claude Code, Cursor, and other AI coding tools can run commands safely without accessing your secrets.
-
 ## How It Works
 
 ### Architecture
 
 ```
 ┌─────────────────────────────────────┐
-│  User: srt "npm install"            │
+│  User: srt "npx -y vibe-kanban"     │
 └──────────────┬──────────────────────┘
                ↓
 ┌──────────────────────────────────────┐
