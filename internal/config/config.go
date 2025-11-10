@@ -1,0 +1,99 @@
+package config
+
+import (
+	_ "embed"
+	"encoding/json"
+)
+
+//go:embed default-config.json
+var defaultConfigJSON []byte
+
+// Config represents the sandbox configuration
+type Config struct {
+	Network               NetworkConfig       `json:"network"`
+	Filesystem            FilesystemConfig    `json:"filesystem"`
+	DangerousFilePatterns []string            `json:"dangerousFilePatterns"`
+	DangerousDirPatterns  []string            `json:"dangerousDirPatterns"`
+	Violations            map[string][]string `json:"ignoreViolations"`
+	Ripgrep               RipgrepConfig       `json:"ripgrep"`
+	Verbose               bool                `json:"-"` // Not from JSON
+}
+
+// NetworkConfig contains network-related settings
+type NetworkConfig struct {
+	DefaultPolicy     string   `json:"defaultPolicy"` // "allow" or "deny"
+	AllowedDomains    []string `json:"allowedDomains"`
+	DeniedDomains     []string `json:"deniedDomains"`
+	AllowUnixSockets  []string `json:"allowUnixSockets"`
+	AllowLocalBinding bool     `json:"allowLocalBinding"`
+	HTTPProxyPort     int      `json:"httpProxyPort"`
+	SOCKSProxyPort    int      `json:"socksProxyPort"`
+}
+
+// FilesystemConfig contains filesystem-related settings
+type FilesystemConfig struct {
+	DenyRead   []string `json:"denyRead"`
+	AllowWrite []string `json:"allowWrite"`
+	DenyWrite  []string `json:"denyWrite"`
+}
+
+// RipgrepConfig contains ripgrep-specific settings
+type RipgrepConfig struct {
+	Command string   `json:"command"`
+	Args    []string `json:"args"`
+}
+
+// DefaultConfig returns a configuration from the embedded default
+func DefaultConfig() (*Config, error) {
+	var cfg Config
+	if err := json.Unmarshal(defaultConfigJSON, &cfg); err != nil {
+		return nil, err
+	}
+	return &cfg, nil
+}
+
+// Merge merges another config into this one (other takes precedence)
+func (c *Config) Merge(other *Config) {
+	if other.Network.DefaultPolicy != "" {
+		c.Network.DefaultPolicy = other.Network.DefaultPolicy
+	}
+	if len(other.Network.AllowedDomains) > 0 {
+		c.Network.AllowedDomains = other.Network.AllowedDomains
+	}
+	if len(other.Network.DeniedDomains) > 0 {
+		c.Network.DeniedDomains = other.Network.DeniedDomains
+	}
+	if len(other.Network.AllowUnixSockets) > 0 {
+		c.Network.AllowUnixSockets = other.Network.AllowUnixSockets
+	}
+	if other.Network.HTTPProxyPort != 0 {
+		c.Network.HTTPProxyPort = other.Network.HTTPProxyPort
+	}
+	if other.Network.SOCKSProxyPort != 0 {
+		c.Network.SOCKSProxyPort = other.Network.SOCKSProxyPort
+	}
+	if len(other.Filesystem.DenyRead) > 0 {
+		c.Filesystem.DenyRead = other.Filesystem.DenyRead
+	}
+	if len(other.Filesystem.AllowWrite) > 0 {
+		c.Filesystem.AllowWrite = other.Filesystem.AllowWrite
+	}
+	if len(other.Filesystem.DenyWrite) > 0 {
+		c.Filesystem.DenyWrite = other.Filesystem.DenyWrite
+	}
+	if len(other.DangerousFilePatterns) > 0 {
+		c.DangerousFilePatterns = other.DangerousFilePatterns
+	}
+	if len(other.DangerousDirPatterns) > 0 {
+		c.DangerousDirPatterns = other.DangerousDirPatterns
+	}
+	if len(other.Violations) > 0 {
+		c.Violations = other.Violations
+	}
+	if other.Ripgrep.Command != "" {
+		c.Ripgrep.Command = other.Ripgrep.Command
+	}
+	if len(other.Ripgrep.Args) > 0 {
+		c.Ripgrep.Args = other.Ripgrep.Args
+	}
+}

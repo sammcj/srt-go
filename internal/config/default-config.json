@@ -1,0 +1,59 @@
+{
+  "network": {
+    "defaultPolicy": "allow",
+    "allowedDomains": [],
+    "deniedDomains": [],
+    "allowUnixSockets": [],
+    "allowLocalBinding": false,
+    "httpProxyPort": 0,
+    "socksProxyPort": 0
+  },
+  "filesystem": {
+    "denyRead": [
+      "~/.ssh/**",
+      "~/.aws/**",
+      "~/.config/gcloud/**",
+      "/var/db/**",
+      "~/Library/Keychains/**",
+      "/System/Library/Keychains/**",
+      "/System/Library/Security/**",
+      "/System/Library/PrivateFrameworks/**",
+      "/System/Library/Extensions/**",
+      "/System/Library/LaunchDaemons/**",
+      "/System/Library/LaunchAgents/**"
+    ],
+    "allowWrite": [
+      "."
+    ],
+    "denyWrite": []
+  },
+  "dangerousFilePatterns": [
+    ".env",
+    ".git-credentials",
+    ".srt-settings.json",
+    ".keychain",
+    ".ripgreprc"
+  ],
+  "dangerousDirPatterns": [
+    ".secrets",
+    ".ssh",
+    ".aws",
+    ".keychain"
+  ],
+  "ignoreViolations": {
+    "*": [
+      "/usr/bin",
+      "/usr/lib",
+      "/System",
+      "/Library"
+    ]
+  },
+  "ripgrep": {
+    "command": "rg",
+    "args": [
+      "--files",
+      "--hidden",
+      "--follow"
+    ]
+  }
+}
