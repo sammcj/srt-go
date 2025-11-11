@@ -47,12 +47,23 @@ func NormalisePaths(paths []string) ([]string, error) {
 	normalised := make([]string, 0, len(paths))
 
 	for _, path := range paths {
-		// Don't normalise globs, keep them as-is
+		// Expand tilde even for glob patterns
+		if strings.HasPrefix(path, "~") {
+			home, err := os.UserHomeDir()
+			if err != nil {
+				return nil, fmt.Errorf("failed to get home directory: %w", err)
+			}
+			path = filepath.Join(home, path[1:])
+		}
+
+		// For glob patterns, don't resolve symlinks or make absolute
+		// Just expand tilde and keep as-is
 		if ContainsGlob(path) {
 			normalised = append(normalised, path)
 			continue
 		}
 
+		// For non-glob paths, do full normalisation
 		normPath, err := NormalisePath(path)
 		if err != nil {
 			return nil, fmt.Errorf("failed to normalise %q: %w", path, err)

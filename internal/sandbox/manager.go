@@ -19,14 +19,14 @@ import (
 
 // Manager orchestrates sandbox execution
 type Manager struct {
-	config         *config.Config
-	httpProxy      *network.HTTPProxy
-	socksProxy     *network.SOCKSProxy
-	profilePath    string
-	violationMon   *ViolationMonitor
-	commandID      string
-	wg             sync.WaitGroup
-	stopCh         chan struct{}
+	config       *config.Config
+	httpProxy    *network.HTTPProxy
+	socksProxy   *network.SOCKSProxy
+	profilePath  string
+	violationMon *ViolationMonitor
+	commandID    string
+	wg           sync.WaitGroup
+	stopCh       chan struct{}
 }
 
 // NewManager creates a new sandbox manager
@@ -110,6 +110,11 @@ func (m *Manager) Execute(command []string) error {
 		return fmt.Errorf("failed to normalise deny write paths: %w", err)
 	}
 
+	allowUnlinkPaths, err := filesystem.NormalisePaths(m.config.Filesystem.AllowUnlink)
+	if err != nil {
+		return fmt.Errorf("failed to normalise allow unlink paths: %w", err)
+	}
+
 	// Get mandatory deny paths (dangerous files in allowed write dirs)
 	mandatoryDeny, err := filesystem.GetMandatoryDenyPaths(
 		allowWritePaths,
@@ -132,6 +137,7 @@ func (m *Manager) Execute(command []string) error {
 		denyReadPaths,
 		allowWritePaths,
 		denyWritePaths,
+		allowUnlinkPaths,
 		m.config.Process.AllowFork,
 		m.config.Process.AllowSysctlRead,
 		m.config.Process.AllowMachLookup,

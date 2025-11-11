@@ -10,7 +10,7 @@ import (
 // GenerateSeatbeltProfile generates a Seatbelt profile from paths and process permissions
 func GenerateSeatbeltProfile(
 	httpProxyPort, socksProxyPort int,
-	denyReadPaths, allowWritePaths, denyWritePaths []string,
+	denyReadPaths, allowWritePaths, denyWritePaths, allowUnlinkPaths []string,
 	allowFork, allowSysctlRead, allowMachLookup, allowPosixShm bool,
 ) (string, error) {
 	var sb strings.Builder
@@ -99,9 +99,25 @@ func GenerateSeatbeltProfile(
 		sb.WriteString("\n")
 	}
 
-	// Prevent file movement bypass
-	sb.WriteString("; Prevent bypassing via file movement\n")
-	sb.WriteString("(deny file-write-unlink)\n")
+	// File unlink/deletion - deny by default, allow specific
+	sb.WriteString("; File unlink/deletion - deny by default\n")
+	sb.WriteString("(deny file-write-unlink)\n\n")
+
+	if len(allowUnlinkPaths) > 0 {
+		sb.WriteString("; Allow unlink in specific paths\n")
+		for _, path := range allowUnlinkPaths {
+			if filesystem.ContainsGlob(path) {
+				regex, err := filesystem.GlobToRegex(path)
+				if err != nil {
+					return "", fmt.Errorf("failed to convert glob %q: %w", path, err)
+				}
+				sb.WriteString(fmt.Sprintf("(allow file-write-unlink (regex #\"%s\"))\n", regex))
+			} else {
+				sb.WriteString(fmt.Sprintf("(allow file-write-unlink (subpath \"%s\"))\n", path))
+			}
+		}
+		sb.WriteString("\n")
+	}
 
 	return sb.String(), nil
 }

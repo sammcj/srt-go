@@ -33,17 +33,18 @@ type NetworkConfig struct {
 
 // FilesystemConfig contains filesystem-related settings
 type FilesystemConfig struct {
-	DenyRead   []string `json:"denyRead"`
-	AllowWrite []string `json:"allowWrite"`
-	DenyWrite  []string `json:"denyWrite"`
+	DenyRead    []string `json:"denyRead"`
+	AllowWrite  []string `json:"allowWrite"`
+	DenyWrite   []string `json:"denyWrite"`
+	AllowUnlink []string `json:"allowUnlink"` // Paths where file deletion/moving is allowed
 }
 
 // ProcessConfig contains process-related sandbox permissions
 type ProcessConfig struct {
-	AllowFork        bool `json:"allowFork"`        // Allow process forking
-	AllowSysctlRead  bool `json:"allowSysctlRead"`  // Allow reading system information
-	AllowMachLookup  bool `json:"allowMachLookup"`  // Allow Mach IPC lookups
-	AllowPosixShm    bool `json:"allowPosixShm"`    // Allow POSIX shared memory
+	AllowFork       bool `json:"allowFork"`       // Allow process forking
+	AllowSysctlRead bool `json:"allowSysctlRead"` // Allow reading system information
+	AllowMachLookup bool `json:"allowMachLookup"` // Allow Mach IPC lookups
+	AllowPosixShm   bool `json:"allowPosixShm"`   // Allow POSIX shared memory
 }
 
 // RipgrepConfig contains ripgrep-specific settings
@@ -89,6 +90,9 @@ func (c *Config) Merge(other *Config) {
 	}
 	if len(other.Filesystem.DenyWrite) > 0 {
 		c.Filesystem.DenyWrite = other.Filesystem.DenyWrite
+	}
+	if len(other.Filesystem.AllowUnlink) > 0 {
+		c.Filesystem.AllowUnlink = other.Filesystem.AllowUnlink
 	}
 	if len(other.DangerousFilePatterns) > 0 {
 		c.DangerousFilePatterns = other.DangerousFilePatterns

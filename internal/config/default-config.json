@@ -23,9 +23,28 @@
       "/System/Library/LaunchAgents/**"
     ],
     "allowWrite": [
-      "."
+      ".",
+      "~/.npm/**",
+      "~/.cache/pip/**",
+      "~/.cache/uv/**",
+      "~/.cargo/**",
+      "~/.pnpm-store/**",
+      "~/.cache/yarn/**",
+      "~/.local/share/pnpm/**",
+      "~/go/pkg/**"
     ],
-    "denyWrite": []
+    "denyWrite": [],
+    "allowUnlink": [
+      ".",
+      "~/.npm/**",
+      "~/.cache/pip/**",
+      "~/.cache/uv/**",
+      "~/.cargo/**",
+      "~/.pnpm-store/**",
+      "~/.cache/yarn/**",
+      "~/.local/share/pnpm/**",
+      "~/go/pkg/**"
+    ]
   },
   "process": {
     "allowFork": true,

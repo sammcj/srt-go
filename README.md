@@ -124,8 +124,29 @@ Configuration is stored in `~/.srt-settings.json` and created automatically on f
       "/System/Library/LaunchDaemons/**",
       "/System/Library/LaunchAgents/**"
     ],
-    "allowWrite": ["."],
-    "denyWrite": []
+    "allowWrite": [
+      ".",
+      "~/.npm/**",
+      "~/.cache/pip/**",
+      "~/.cache/uv/**",
+      "~/.cargo/**",
+      "~/.pnpm-store/**",
+      "~/.cache/yarn/**",
+      "~/.local/share/pnpm/**",
+      "~/go/pkg/**"
+    ],
+    "denyWrite": [],
+    "allowUnlink": [
+      ".",
+      "~/.npm/**",
+      "~/.cache/pip/**",
+      "~/.cache/uv/**",
+      "~/.cargo/**",
+      "~/.pnpm-store/**",
+      "~/.cache/yarn/**",
+      "~/.local/share/pnpm/**",
+      "~/go/pkg/**"
+    ]
   },
   "process": {
     "allowFork": true,
@@ -227,11 +248,21 @@ Choose between two network security models:
 ```json
 {
   "filesystem": {
-    "allowWrite": ["."],      // Allow current directory
+    "allowWrite": [
+      ".",                          // Current directory
+      "~/.npm/**",                  // npm cache
+      "~/.cache/pip/**",            // pip cache
+      "~/.cache/uv/**",             // uv cache
+      "~/.cargo/**",                // Rust/cargo cache
+      "~/.pnpm-store/**",           // pnpm cache
+      "~/.cache/yarn/**",           // Yarn cache
+      "~/.local/share/pnpm/**",     // pnpm state
+      "~/go/pkg/**"                 // Go package cache
+    ],
     "denyWrite": [
-      "**/.env*",             // Block .env files
-      "**/*.key",             // Block key files
-      "**/.git/**"            // Block .git directory
+      "**/.env*",                   // Block .env files
+      "**/*.key",                   // Block key files
+      "**/.git/**"                  // Block .git directory
     ]
   }
 }
@@ -239,8 +270,32 @@ Choose between two network security models:
 
 - By default, all writes are denied
 - Only paths in `allowWrite` permit writes
+- Package manager caches are allowed by default for usability
 - Paths in `denyWrite` are blocked even if parent is allowed
 - More specific rules override general rules
+
+**Security Note**: Package manager caches are included in default write permissions to prevent common errors like `EPERM` when running `npm`, `pip`, `cargo`, etc. These directories don't contain secrets, but a malicious package could write to them. For maximum security, remove cache directories from `allowWrite` (though this will break most package managers).
+
+#### Unlink (Deletion) Restrictions
+
+```json
+{
+  "filesystem": {
+    "allowUnlink": [
+      ".",
+      "~/.npm/**",
+      "~/.cache/pip/**"
+    ]
+  }
+}
+```
+
+- File deletion (`unlink`) is denied by default, even in directories with write permissions
+- Only paths in `allowUnlink` permit file deletion and moving
+- Package manager caches need both write and unlink permissions to function
+- Supports the same glob patterns as other filesystem rules
+
+**Why separate from write?**: Separating deletion from write permissions provides defence in depth - a process can create files without being able to delete existing ones, limiting potential damage.
 
 #### Dangerous File Protection
 

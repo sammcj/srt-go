@@ -11,9 +11,9 @@ import (
 
 // DangerousFileDetector finds dangerous files in directories
 type DangerousFileDetector struct {
-	useRipgrep          bool
-	rgCommand           string
-	rgArgs              []string
+	useRipgrep            bool
+	rgCommand             string
+	rgArgs                []string
 	dangerousFilePatterns []string
 	dangerousDirPatterns  []string
 }
@@ -21,8 +21,8 @@ type DangerousFileDetector struct {
 // NewDangerousFileDetector creates a new detector
 func NewDangerousFileDetector(rgCommand string, rgArgs []string, filePatterns, dirPatterns []string) *DangerousFileDetector {
 	detector := &DangerousFileDetector{
-		rgCommand:           rgCommand,
-		rgArgs:              rgArgs,
+		rgCommand:             rgCommand,
+		rgArgs:                rgArgs,
 		dangerousFilePatterns: filePatterns,
 		dangerousDirPatterns:  dirPatterns,
 	}
