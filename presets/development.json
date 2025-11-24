@@ -1,0 +1,48 @@
+{
+  "filesystem": {
+    "allowWrite": [
+      ".",
+      "~/.npm/**",
+      "~/.cache/pip/**",
+      "~/.cache/uv/**",
+      "~/.cargo/**",
+      "~/.pnpm-store/**",
+      "~/.cache/yarn/**",
+      "~/.local/share/pnpm/**",
+      "~/go/pkg/**"
+    ],
+    "allowUnlink": [
+      ".",
+      "~/.npm/**",
+      "~/.cache/pip/**",
+      "~/.cache/uv/**",
+      "~/.cargo/**",
+      "~/.pnpm-store/**",
+      "~/.cache/yarn/**",
+      "~/.local/share/pnpm/**",
+      "~/go/pkg/**"
+    ],
+    "denyWrite": [
+      "~/.srt/srt-settings.json",
+      "~/.srt-settings.json"
+    ]
+  },
+  "network": {
+    "defaultPolicy": "deny",
+    "allowedDomains": [
+      "github.com",
+      "*.github.com",
+      "registry.npmjs.org",
+      "*.npmjs.org",
+      "pypi.org",
+      "*.pypi.org",
+      "files.pythonhosted.org",
+      "crates.io",
+      "*.crates.io",
+      "static.crates.io",
+      "pkg.go.dev",
+      "proxy.golang.org",
+      "sum.golang.org"
+    ]
+  }
+}

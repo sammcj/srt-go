@@ -1,0 +1,18 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for srt
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a feature, if possible please provide a PR with the implementation.
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: Clear description of the feature you'd like to see added
+      placeholder: Describe the feature...
+    validations:
+      required: true

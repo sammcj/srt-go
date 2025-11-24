@@ -1,0 +1,10 @@
+{
+  "filesystem": {
+    "allowWrite": [],
+    "allowUnlink": []
+  },
+  "network": {
+    "defaultPolicy": "deny",
+    "allowedDomains": []
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "network": {
+    "defaultPolicy": "deny",
+    "allowedDomains": [],
+    "deniedDomains": [],
+    "allowUnixSockets": [],
+    "allowLocalBinding": false,
+    "httpProxyPort": 0,
+    "socksProxyPort": 0
+  },
+  "filesystem": {
+    "denyRead": [
+      "~/.ssh/**",
+      "~/.aws/**",
+      "~/.config/gcloud/**",
+      "~/.bash_history",
+      "~/.zsh_history",
+      "~/.python_history",
+      "~/.node_repl_history",
+      "~/.mysql_history",
+      "~/.psql_history",
+      "~/.s3cfg",
+      "~/.boto",
+      "~/.botocore/**",
+      "~/.azure/**",
+      "~/.config/doctl/**",
+      "~/.pgpass",
+      "~/.my.cnf",
+      "~/.mysql_secret",
+      "~/.redis.conf",
+      "~/.docker/config.json",
+      "~/.kube/config",
+      "~/.password-store/**",
+      "~/.authinfo",
+      "~/.authinfo.gpg",
+      "~/.netrc",
+      "/var/db/**",
+      "~/Library/Keychains/**",
+      "/System/Library/Keychains/**",
+      "/System/Library/Security/**",
+      "/System/Library/PrivateFrameworks/**",
+      "/System/Library/Extensions/**",
+      "/System/Library/LaunchDaemons/**",
+      "/System/Library/LaunchAgents/**"
+    ],
+    "denyWrite": [
+      "~/.srt/srt-settings.json",
+      "~/.srt-settings.json"
+    ],
+    "allowWrite": [
+      ".",
+      "~/.npm/**",
+      "~/.cache/pip/**",
+      "~/.cache/uv/**",
+      "~/.cargo/**",
+      "~/.pnpm-store/**",
+      "~/.cache/yarn/**",
+      "~/.local/share/pnpm/**",
+      "~/go/pkg/**"
+    ],
+    "allowUnlink": [
+      ".",
+      "~/.npm/**",
+      "~/.cache/pip/**",
+      "~/.cache/uv/**",
+      "~/.cargo/**",
+      "~/.pnpm-store/**",
+      "~/.cache/yarn/**",
+      "~/.local/share/pnpm/**",
+      "~/go/pkg/**"
+    ]
+  },
+  "process": {
+    "allowFork": true,
+    "allowSysctlRead": true,
+    "allowMachLookup": true,
+    "allowPosixShm": true
+  },
+  "scanAndBlockFiles": [
+    ".env",
+    ".git-credentials",
+    ".srt-settings.json",
+    ".keychain",
+    ".ripgreprc"
+  ],
+  "scanAndBlockDirs": [
+    ".secrets",
+    ".ssh",
+    ".aws",
+    ".keychain",
+    "Keychains"
+  ],
+  "ignoreViolations": {
+    "*": [
+      "/usr/bin",
+      "/usr/lib",
+      "/System",
+      "/Library"
+    ]
+  },
+  "ripgrep": {
+    "command": "rg",
+    "args": [
+      "--files",
+      "--hidden",
+      "--follow"
+    ]
+  }
+}

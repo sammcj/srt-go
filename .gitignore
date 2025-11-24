@@ -1,0 +1,42 @@
+# allow
+!cmd/**/*.go
+
+# Binaries
+srt
+srt-arm64
+srt-amd64
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+dist/
+build/
+bin/
+
+# Temporary files
+*.sb
+*.tmp
